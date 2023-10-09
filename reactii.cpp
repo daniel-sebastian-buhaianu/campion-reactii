@@ -7,71 +7,54 @@ using namespace std;
 ifstream fin("reactii.in");
 ofstream fout("reactii.out");
 
-struct subsecventa { int min, max; };
-
-subsecventa ss[NMAX];
+struct interval { int min, max; };
 
 int main()
 {
-	int n, m, i, nr, rct, j;
+	interval stv[NMAX], ss;
+
+	int n, m, j, vf, i;
 
 	fin >> n >> m;
 	
 	for (j = 0; j < m; j++)
 	{
-		for (i = 0; i < n; i++)
+		vf = 0;
+
+		fin >> stv[vf].min;
+
+		stv[vf].max = stv[vf].min;
+
+		for (i = 1; i < n; i++)
 		{
-			fin >> ss[i].min;
+			fin >> ss.min;
 
-			ss[i].max = ss[i].min;
-		}
-
-		nr = n;
-
-		do
-		{	
-			rct = 0;
-
-			for (i = 0; i < nr-1; i++)
+			ss.max = ss.min;
+			
+			while (vf >= 0)
 			{
-				if (ss[i].max == ss[i+1].min-1)
+				if (ss.max+1 == stv[vf].min)
 				{
-					ss[i].max = ss[i+1].max;
+					ss.max = stv[vf].max;
 
-					rct = 1;
+					vf--;
 				}
-				else if (ss[i].min-1 == ss[i+1].max)
+				else if (ss.min-1 == stv[vf].max)
 				{
-					ss[i].min = ss[i+1].min;
+					ss.min = stv[vf].min;
 
-					rct = 1;
+					vf--;
 				}
-
-				if (rct)
+				else
 				{
-					for (i++; i < nr-1; i++)
-					{
-						ss[i] = ss[i+1];
-					}
-
-					nr--;
-
 					break;
 				}
 			}
-		}
-		while (rct);
 
-		if (nr == 1)
-		{
-			fout << 1;
-		}
-		else
-		{
-			fout << 0;
+			stv[++vf] = ss;
 		}
 
-		fout << '\n';
+		fout << (vf == 0) << '\n';
 	}
 	
 	fin.close();
@@ -80,5 +63,4 @@ int main()
 
 	return 0;
 }
-
-// scor 50
+// scor 100
